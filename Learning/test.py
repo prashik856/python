@@ -31,8 +31,14 @@ for key in unique_ri_id.keys():
 
 
 # We get null ri after running our sql statements
-null_ri_ids = ["d8a6c61b34974c5d9dcfd9774767dce4", 
-           "b51bdc368ab0415581d7b9ac93126db7"]
+null_ri_ids = ["e7368fbc70ba4daeab707af2cb3fe677",
+                "b88dee2663c64bb5aec35a415519440f",
+               "00177770e4204510a932cda9968ee57e",
+               "2c20905533e24e6dad1394e3996513a8",
+               "9c9ce8eae94d43be98965b68090ccc18",
+               "9a2ca83e8e7949c88f81cebbb307739c",
+               "339850c759a048ae9f93ef12e6383757"]
+
 
 # Get the ri_id of resources which have these null_ri as a reference to them
 ri_id_to_delete = []
@@ -49,14 +55,23 @@ for clobs in ri_id_subresources:
             break
     index = index + 1
 
+print("Resources to Delete: ")
 print(ri_id_to_delete)
 
+
+print("Run these sql statements to check piri you are deleting")
 # Run these delete statements
 for item in ri_id_to_delete:
     print("select * from PLATFORM_INSTANCE_RESOURCE_INSTANCES  where PIRI_RI_ID = '{}';".format(item))
-    print("select * from RESOURCE_INSTANCES WHERE RI_ID='{}';".format(item))
-    
 
+print("Run these sql statements to check ri you are deleting")
 for item in ri_id_to_delete:
-    print("delete from PLATFORM_INSTANCE_RESOURCE_INSTANCES  where PIRI_RI_ID = '{}';".format(item))
-    print("delete from RESOURCE_INSTANCES  where RI_ID = '{}';".format(item))
+    print("select * from RESOURCE_INSTANCES WHERE RI_ID='{}';".format(item))
+
+# print("Run these sql resources to delete piri")
+# for item in ri_id_to_delete:
+#     print("delete from PLATFORM_INSTANCE_RESOURCE_INSTANCES  where PIRI_RI_ID = '{}';".format(item))
+
+# print("Run to delete resources")
+# for item in ri_id_to_delete:
+#     print("delete from RESOURCE_INSTANCES  where RI_ID = '{}';".format(item))
