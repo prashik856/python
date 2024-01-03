@@ -4,11 +4,12 @@ with open("resources.json", "r") as jf:
     data = json.load(jf)
 
 #print(data)
-tenancy = "iotdev"
-compartment = "InfraDevelopment"
-region = "us-ashburn-1"
-plane = "dp"
-microservice = "microservice-iot-sample"
+# Fields to search for
+tenancy = ""
+compartment = ""
+region = ""
+plane = ""
+microservice = ""
 # deploy.json file from dev-env-config directory.
 
 ms_schema = microservice.replace("-", "_")
