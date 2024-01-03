@@ -15,6 +15,8 @@ if metadata in job:
     if "labels" in job[metadata]:
         if "controller-uid" in job[metadata]["labels"]:
             job[metadata]["labels"].pop("controller-uid")
+        if "batch.kubernetes.io/controller-uid" in job[metadata]["labels"]:
+            job[metadata]["labels"].pop("batch.kubernetes.io/controller-uid")
     if "resourceVersion" in job[metadata]:
         job[metadata].pop("resourceVersion")
     if "uid" in job[metadata]:
@@ -37,6 +39,8 @@ if spec in job:
             if "labels" in job[spec][template][metadata]:
                 if "controller-uid" in job[spec][template][metadata]["labels"]:
                     job[spec][template][metadata]["labels"].pop("controller-uid")
+                if "batch.kubernetes.io/controller-uid" in job[spec][template][metadata]["labels"]:
+                    job[spec][template][metadata]["labels"].pop("batch.kubernetes.io/controller-uid")
 
 if "status" in job:
     job.pop("status")
