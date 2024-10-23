@@ -41,3 +41,18 @@ mysql -u root -p
 # My System password
 
 ```
+
+# Install Django
+```bash
+# Install pipx first
+sudo apt install pipx
+
+# Make sure /bin is in path
+pipx ensurepath
+
+# Install django
+pipx install Django
+
+# Installed django using python3 
+python3 -m pip install Django --break-system-packages
+```
