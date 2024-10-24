@@ -56,3 +56,62 @@ pipx install Django
 # Installed django using python3 
 python3 -m pip install Django --break-system-packages
 ```
+
+# Tutorial
+```bash
+# Create project directory
+mkdir django_tutorial
+
+# Create django project
+django-admin startproject prashiksite django_tutorial
+
+# Run server
+python3 manage.py runserver
+
+# Follow this: https://docs.djangoproject.com/en/5.1/intro/tutorial02/
+
+# Create polls
+python3 manage.py startapp polls
+
+# Apply migrations
+python3 manage.py migrate
+
+# Making changes in models
+python3 manage.py makemigrations polls
+# Remake migrations after changing any models
+
+# See what SQL migration would look like
+python3 manage.py sqlmigrate polls 0001
+
+# Check for problems in project without touching database
+python3 manage.py check
+
+# Run migrate again to create those tables in the database
+python3 manage.py migrate
+
+# Playing with API
+python3 manage.py shell
+```
+
+# Django Admin
+```bash
+# Creating admin user
+python3 manage.py createsuperuser
+# Can use superuser as admin
+# We can use our password as system password
+
+# Start development server
+python3 manage.py runserver
+
+# Make poll app modifiable in the admin
+```
+
+# Tutorial 3
+
+Follow this: https://docs.djangoproject.com/en/5.1/intro/tutorial03/
+
+```bash
+# Writing more views
+
+
+```
