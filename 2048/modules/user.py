@@ -1,26 +1,52 @@
-from pynput import keyboard
-from pynput.keyboard import Key
+import re
 
-class UserInput:
+class User:
     def __init__(self) -> None:
-        self.name = "Hello"
+        self.name = "Hello 2048"
 
-    def on_key_release(self, key):
-        if key == Key.right:
-            print("Right Key pressed")
-            return 'r'
-        elif key == Key.left:
-            print("Left Key pressed")
-            return 'l'
-        elif key == Key.up:
-            print("Up Key pressed")
-            return 'u'
-        elif key == Key.down:
-            print("Down Key pressed")
-            return 'd'
-        elif key == Key.esc:
-            exit()
+    def filter_input(self, key, action):
+        '''
+        Function to filter user input.
+        '''
+
+        if len(key) > 1:
+            print("Input can only be of single Digit. Please try again.")
+            print()
+            return False
+        
+        pattern: str = r'[2-9]'
+        if action == "init":
+            # key must be a number
+            if not re.match(pattern, key):
+                print("Grid size can only be a number between 2 and 9. Please try again.")
+                print()
+                return False
+            
+            self.grid_size = int(key)
+            return True
+        
+        elif action == "play":
+            # key must be wasd
+            pattern: str = r'[wasd]'
+            if not re.match(pattern, key):
+                print("Play key can only be wasd. Please try again.")
+                print()
+                return False
+            self.key_pressed = key
+            return True
     
-    def get_user_input(self) -> str:
-        with keyboard.Listener(on_release=self.on_key_release) as listener:
-            listener.join()
+    # We will fine tune keyboard input later
+    def get_user_input(self, action) -> bool:
+        '''
+        Function to get user input.
+        '''
+        filter_output: bool = False
+        while filter_output is not True:
+            if action == "init":
+                key = input("Please enter grid size: ")
+                print()
+            elif action == "play":
+                key = input("Please press play key: ")
+                print()
+            filter_output = self.filter_input(key, action)
+        

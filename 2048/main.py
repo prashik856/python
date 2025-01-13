@@ -1,15 +1,15 @@
 from modules.grid import Grid
-from modules.user import UserInput
+from modules.user import User
 
 def main():
-    user_input = UserInput()
-    user_input.get_user_input()
-    # grid_size: int = 4
-    # grid = Grid(grid_size=grid_size)
-    # grid.display_grid()
-    # for i in range(10):
-    #     print(i, end='\r')
-    # print()
+    # Initialize the grid
+    user = User()
+    user.get_user_input("init")
+
+    print("Grid size to be used: " + str(user.grid_size))
+
+    grid = Grid(user.grid_size)
+    grid.display()
 
 if __name__ == "__main__":
     main()

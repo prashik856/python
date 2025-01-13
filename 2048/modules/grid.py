@@ -3,40 +3,48 @@ import random
 class Grid:
     def __init__(self, grid_size: int) -> None:
         # the grid size
-        self.grid_size: int = grid_size
-        
+        self.size: int = grid_size
+        self.empty_count: int = grid_size * grid_size
+
         # The actual grid object
-        self.grid_object: list = []
-
-        # The list which stores which indexes are empty
-        self.grid_empty_list: list = []
-
-        # the mapping which stores the map of random index to grid index
-        self.grid_space_map: dict = {}
+        self.object: list = []
 
         # Initializing grid
         for i in range(grid_size):
-            self.grid_object.append([])
+            self.object.append([])
             for j in range(grid_size):
                 index: int = i * grid_size + j
-                self.grid_object[i].append(0)
-                self.grid_empty_list.append(False)
-                self.grid_space_map[index] = [i,j]
+                self.object[i].append(0)
 
 
-    def display_grid(self) -> None:
+    def display(self) -> None:
         '''
         Function which will display the current grid
         '''
-        for i in range(len(self.grid_object)):
-            for j in range(len(self.grid_object[i])):
-                if self.grid_object[i][j] == 0:
-                    print('.', end=' ')
+        print()
+
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.object[i][j] == 0:
+                    print(' . ', end=' ')
                 else:
-                    print(self.grid_object[i][j], end=' ')
-            print()
+                    print(self.object[i][j], end=' ')
+            print("\n")
         print()
     
+        # More details for development
+        print("Empty Count: " + str(self.empty_count))
+        print()
+
+
+    
+
+
+    def random_update(self) -> bool: 
+        '''
+        Function to update the grid by placing a random 2 at an empty location.
+        '''
+
 
     def get_random_item_location(self) -> int:
         '''
@@ -51,12 +59,3 @@ class Grid:
                 break
         return random_index
 
-
-    def update_grid(self) -> None:
-        '''
-        function which will update the grid and all related values
-        '''
-        random_index = self.get_random_item_location()
-        self.grid_empty_list[random_index] = True
-        index_as_list = self.grid_space_map[random_index]
-        self.grid_object[index_as_list[0]][index_as_list[1]] = 2
