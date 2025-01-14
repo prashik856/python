@@ -14,7 +14,7 @@ class User:
             print()
             return False
         
-        pattern: str = r'[2-9]'
+        pattern: str = r'[1-9]'
         if action == "init":
             # key must be a number
             if not re.match(pattern, key):
@@ -36,7 +36,7 @@ class User:
             return True
     
     # We will fine tune keyboard input later
-    def get_user_input(self, action) -> bool:
+    def get_user_input(self, action) -> str:
         '''
         Function to get user input.
         '''
@@ -49,4 +49,4 @@ class User:
                 key = input("Please press play key: ")
                 print()
             filter_output = self.filter_input(key, action)
-        
+        return key        
