@@ -9,6 +9,8 @@ class Grid:
         self.size: int = grid_size
         # List that stores indexes of empty positions
         self.empty_list: list = []
+        # Count score
+        self.score = 0
 
         # The actual grid object
         self.object: list = []
@@ -39,6 +41,10 @@ class Grid:
         # More details for development
         print("Empty Positions: ")
         print(self.empty_list)
+        print()
+
+        # Print Score
+        print("Current Score: " + str(self.score))
         print()
 
 
@@ -115,6 +121,7 @@ class Grid:
         self.row: int = self.empty_list[random_index][0]
         self.col: int = self.empty_list[random_index][1]
         self.object[self.row][self.col] = 2
+        self.score += 2
 
         # Update the empty_list as current random index is now not empty
         # Remove the random_index Value
@@ -130,6 +137,7 @@ class Grid:
             if index + 1 < len(stack):
                 if stack[index] == stack[index+1]:
                     stack[index] += stack[index + 1]
+                    self.score += stack[index]
                     stack.pop(index+1)
             else:
                 continue
