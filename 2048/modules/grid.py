@@ -29,7 +29,7 @@ class Grid:
                 if self.object[i][j] == 0:
                     print(' . ', end=' ')
                 else:
-                    print(self.object[i][j], end=' ')
+                    print(' ' + str(self.object[i][j]) + ' ', end=' ')
             print("\n")
         print()
     
@@ -46,14 +46,20 @@ class Grid:
         random_index: int = -1
         random_index = random.randrange(0, len(self.empty_list))
         return random_index
+    
 
-
-    def check_grid_index(self, row_value, col_value) -> bool:
-        print("Checking index: " + str(row_value) + " - " + str(col_value))
+    def check_grid_boundary(self, row_value: int, col_value: int) -> bool:
         if (row_value >= 0 
             and row_value < self.size 
             and col_value >= 0 
             and col_value < self.size):
+            return True
+        return False
+
+
+    def check_grid_index(self, row_value: int, col_value: int) -> bool:
+        print("Checking index: " + str(row_value) + " - " + str(col_value))
+        if self.check_grid_boundary(row_value, col_value):
             if self.object[row_value][col_value] == 2:
                 # Continue Play
                 print("2 present. Player can play on this index.")
@@ -101,3 +107,57 @@ class Grid:
         # Update the empty_list as current random index is now not empty
         # Remove the random_index Value
         self.empty_list.remove(self.empty_list[random_index])
+
+    def align_right(self):
+        return
+
+
+    def align_left(self):
+        return
+
+
+    def align_down(self):
+        return
+
+
+    def align_up(self):
+        # Go through each column
+        for i in range(self.size):
+            stack: list = []
+            # Store the column
+            for j in range(self.size):
+                if self.object[j][i] != 0:
+                        stack.append(self.object[j][i])
+                        # Update this object
+                        self.object[j][i] = 0
+                else:
+                    continue
+            
+            # Process the column
+            for index in range(len(stack)):
+                if index + 1 < len(stack):
+                    if stack[index] == stack[index+1]:
+                        stack[index] += stack[index + 1]
+                        stack.pop(index+1)
+                else:
+                    continue
+            
+            # Store the updated column, and also store the empty indexes
+            for j in range(self.size):
+                if j < len(stack):
+                    self.object[j][i] = stack[j]
+                else:
+                    self.empty_list.append([j,i])
+
+
+    def update(self, key: str) -> None:
+        # Update empty indexes
+        self.empty_list = []
+        if key == 'w':
+            self.align_up()
+        elif key == 's':
+            self.align_down()
+        elif key == 'a':
+            self.align_left()
+        elif key == 'd':
+            self.align_right()

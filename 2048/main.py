@@ -21,14 +21,9 @@ def main():
         # Get the key pressed
         key : str = user.get_user_input("play")
         print("Key pressed: " + key)
-
-        # w - move elements upwards
-
-        # s - move elements downwards
-
-        # a - move elements to the left
-
-        # d - move elements to the right
+        grid.update(key)
+        grid.random_update()
+        grid.display()
 
     
     print("Game Over.")
