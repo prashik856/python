@@ -2,6 +2,9 @@ import random
 
 class Grid:
     def __init__(self, grid_size: int) -> None:
+        '''
+        Grid class which stores the actual Grid Object.
+        '''
         # the grid size
         self.size: int = grid_size
         # List that stores indexes of empty positions
@@ -49,6 +52,9 @@ class Grid:
     
 
     def check_grid_boundary(self, row_value: int, col_value: int) -> bool:
+        '''
+        Function to check the if given index is inside the grid boundary.
+        '''
         if (row_value >= 0 
             and row_value < self.size 
             and col_value >= 0 
@@ -58,6 +64,9 @@ class Grid:
 
 
     def check_grid_index(self, row_value: int, col_value: int) -> bool:
+        '''
+        Function to check if given index on the grid is playable.
+        '''
         print("Checking index: " + str(row_value) + " - " + str(col_value))
         if self.check_grid_boundary(row_value, col_value):
             if self.object[row_value][col_value] == 2:
@@ -74,6 +83,9 @@ class Grid:
 
 
     def check_game_over(self) -> bool:
+        '''
+        Function to check if game is over.
+        '''
         print("Random row/col values used: " + str(self.row) + " - " + str(self.col))
         is_game_over: bool = False
         if len(self.empty_list) != 0:
@@ -110,6 +122,9 @@ class Grid:
 
 
     def update_stack(self, stack: list) -> list:
+        '''
+        Function to update the stack stored.
+        '''
         # Process the column
         for index in range(len(stack)):
             if index + 1 < len(stack):
@@ -122,35 +137,40 @@ class Grid:
 
 
     def align_right(self):
-        
-        return
-
-
-    def align_left(self):
+        '''
+        Function to align all the elements to the right.
+        '''
         # Go through each row
         for i in range(self.size):
             stack: list = []
 
             # Store the row
-            for j in range(self.size):
+            for j in range(self.size-1, -1, -1):
                 if self.object[i][j] != 0:
                     stack.append(self.object[i][j])
+                    # Update the object
                     self.object[i][j] = 0
                 else:
                     continue
-            
+        
             # Process the row
             stack = self.update_stack(stack)
 
-            for j in range(self.size):
-                if j < len(stack):
-                    self.object[i][j] = stack[j]
+            # Update the row
+            stack_index: int = 0
+            for j in range(self.size-1, -1, -1):
+                if stack_index < len(stack):
+                    self.object[i][j] = stack[stack_index]
+                    stack_index += 1
                 else:
                     self.empty_list.append([i,j])
         return
 
 
     def align_down(self):
+        '''
+        Function to align all elements downwards.
+        '''
         # Go through each column
         for i in range(self.size):
             stack: list = []
@@ -177,7 +197,37 @@ class Grid:
         return
 
 
+    def align_left(self):
+        '''
+        Function to align all elements to the left.
+        '''
+        # Go through each row
+        for i in range(self.size):
+            stack: list = []
+
+            # Store the row
+            for j in range(self.size):
+                if self.object[i][j] != 0:
+                    stack.append(self.object[i][j])
+                    self.object[i][j] = 0
+                else:
+                    continue
+            
+            # Process the row
+            stack = self.update_stack(stack)
+
+            for j in range(self.size):
+                if j < len(stack):
+                    self.object[i][j] = stack[j]
+                else:
+                    self.empty_list.append([i,j])
+        return
+
+
     def align_up(self):
+        '''
+        Function to align all elements upwards.
+        '''
         # Go through each column
         for i in range(self.size):
             stack: list = []
@@ -202,6 +252,9 @@ class Grid:
 
 
     def update(self, key: str) -> None:
+        '''
+        Function to update the Grid after playable key is pressed.
+        '''
         # Update empty indexes
         self.empty_list = []
         if key == 'w':
@@ -212,3 +265,4 @@ class Grid:
             self.align_left()
         elif key == 'd':
             self.align_right()
+
