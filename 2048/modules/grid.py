@@ -122,15 +122,16 @@ class Grid:
             return is_game_over
         else:
             # Random index will not be equal to -1 here
-            is_game_over = not (self.check_grid_index(self.row - 1, self.col)
-                or self.check_grid_index(self.row + 1, self.col)
-                or self.check_grid_index(self.row, self.col - 1)
-                or self.check_grid_index(self.row, self.col + 1))
-            print("Is Game Over value: " + str(is_game_over))
-            if is_game_over:
-                print("No other position to play now. Stop playing.")
-            else:
-                print("Player can play more positions. Continue Playing.")
+            for i in range(self.size):
+                for j in range(self.size):
+                    is_game_over = (self.check_grid_index(i - 1, j)
+                        or self.check_grid_index(i + 1, j)
+                        or self.check_grid_index(i, j - 1)
+                        or self.check_grid_index(i, j + 1))
+                    print("Player can play more positions. Continue Playing.")
+                    return False
+            print("Game over. Player cannot play any other position.")
+            is_game_over = True
         return is_game_over
 
 
