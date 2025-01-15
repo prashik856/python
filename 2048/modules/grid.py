@@ -108,15 +108,72 @@ class Grid:
         # Remove the random_index Value
         self.empty_list.remove(self.empty_list[random_index])
 
+
+    def update_stack(self, stack: list) -> list:
+        # Process the column
+        for index in range(len(stack)):
+            if index + 1 < len(stack):
+                if stack[index] == stack[index+1]:
+                    stack[index] += stack[index + 1]
+                    stack.pop(index+1)
+            else:
+                continue
+        return stack
+
+
     def align_right(self):
+        
         return
 
 
     def align_left(self):
+        # Go through each row
+        for i in range(self.size):
+            stack: list = []
+
+            # Store the row
+            for j in range(self.size):
+                if self.object[i][j] != 0:
+                    stack.append(self.object[i][j])
+                    self.object[i][j] = 0
+                else:
+                    continue
+            
+            # Process the row
+            stack = self.update_stack(stack)
+
+            for j in range(self.size):
+                if j < len(stack):
+                    self.object[i][j] = stack[j]
+                else:
+                    self.empty_list.append([i,j])
         return
 
 
     def align_down(self):
+        # Go through each column
+        for i in range(self.size):
+            stack: list = []
+            # Store the column
+            for j in range(self.size-1, -1, -1):
+                if self.object[j][i] != 0:
+                    stack.append(self.object[j][i])
+                    # Update this object
+                    self.object[j][i] = 0
+                else:
+                    continue
+            
+            # Process the column
+            stack = self.update_stack(stack)
+            
+            # Store the updated column, and also store the empty indexes
+            stack_index: int = 0
+            for j in range(self.size-1, -1, -1):
+                if stack_index < len(stack):
+                    self.object[j][i] = stack[stack_index]
+                    stack_index += 1
+                else:
+                    self.empty_list.append([j,i])
         return
 
 
@@ -134,13 +191,7 @@ class Grid:
                     continue
             
             # Process the column
-            for index in range(len(stack)):
-                if index + 1 < len(stack):
-                    if stack[index] == stack[index+1]:
-                        stack[index] += stack[index + 1]
-                        stack.pop(index+1)
-                else:
-                    continue
+            stack = self.update_stack(stack)
             
             # Store the updated column, and also store the empty indexes
             for j in range(self.size):
