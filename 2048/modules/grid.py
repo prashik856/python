@@ -11,16 +11,39 @@ class Grid:
         self.empty_list: list = []
         # Count score
         self.score = 0
-
         # The actual grid object
         self.object: list = []
+        self.previous_object: list = []
 
         # Initializing grid
         for i in range(grid_size):
             self.object.append([])
+            self.previous_object.append([])
             for j in range(grid_size):
                 self.object[i].append(0)
+                self.previous_object[i].append(0)
                 self.empty_list.append([i, j])
+
+
+    def save_current_state(self) -> None:
+        '''
+        Function to store a copy of current grid state.
+        '''
+        for i in range(self.size):
+            for j in range(self.size):
+                self.previous_object[i][j] = self.object[i][j]
+        return
+
+
+    def is_equal_with_previous_state(self) -> bool:
+        '''
+        Function to check if current grid state is equal to previous grid state.
+        '''
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.object[i][j] != self.previous_object[i][j]:
+                    return False
+        return True
 
 
     def display(self) -> None:
