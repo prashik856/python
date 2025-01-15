@@ -92,18 +92,18 @@ class Grid:
         return False
 
 
-    def check_grid_index(self, row_value: int, col_value: int) -> bool:
+    def check_grid_index(self, row_value: int, col_value: int, grid_val: int) -> bool:
         '''
         Function to check if given index on the grid is playable.
         '''
         print("Checking index: " + str(row_value) + " - " + str(col_value))
         if self.check_grid_boundary(row_value, col_value):
-            if self.object[row_value][col_value] == 2:
+            if self.object[row_value][col_value] == grid_val:
                 # Continue Play
-                print("2 present. Player can play on this index.")
+                print("Valid value present. Player can play on this index.")
                 return True
             else:
-                print("2 not present anywhere. Player cannot play on this index.")
+                print("Valid value not present anywhere. Player cannot play on this index.")
                 return False
         else:
             # Bad index
@@ -122,17 +122,22 @@ class Grid:
             return is_game_over
         else:
             # Random index will not be equal to -1 here
+            end_game: bool = True
             for i in range(self.size):
                 for j in range(self.size):
-                    is_game_over = (self.check_grid_index(i - 1, j)
-                        or self.check_grid_index(i + 1, j)
-                        or self.check_grid_index(i, j - 1)
-                        or self.check_grid_index(i, j + 1))
-                    print("Player can play more positions. Continue Playing.")
-                    return False
-            print("Game over. Player cannot play any other position.")
-            is_game_over = True
-        return is_game_over
+                    if self.object[i][j] != 0:
+                        val: int = self.object[i][j]
+                        is_game_over = not (self.check_grid_index(i - 1, j, val)
+                            or self.check_grid_index(i + 1, j, val)
+                            or self.check_grid_index(i, j - 1, val)
+                            or self.check_grid_index(i, j + 1, val))
+                        end_game = end_game and is_game_over
+            if end_game:
+                print("Game over. Player cannot play any other position.")
+                return end_game
+            else:
+                print("Player can play more positions. Continue playing.")
+        return end_game
 
 
     def random_update(self) -> bool: 
