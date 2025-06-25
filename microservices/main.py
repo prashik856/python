@@ -1,8 +1,17 @@
 from flask import Flask
 import json
 
+
 app = Flask(__name__)
 current_version: str = "1.0.0"
+
+
+exit(0)
+
+# videos api, models api
+# store statistics in json files, load them first
+# videos api -> number of views
+# models api -> number of model views
 
 @app.route("/api/dashboard/v1/version", methods=['GET'])
 def get_version():
