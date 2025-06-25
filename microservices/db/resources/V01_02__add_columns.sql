@@ -1,0 +1,4 @@
+ALTER TABLE VIDEOS ADD VIDEOPATH text not null;
+
+ALTER TABLE MODELS ADD DIR text not null;
+

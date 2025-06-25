@@ -1,5 +1,5 @@
-import mysql.connector
 import json
+from connector import get_admin_connection, get_database_connection
 
 
 def read_json(file_name: str):
@@ -8,15 +8,23 @@ def read_json(file_name: str):
     return data
 
 
-def get_admin_connection(admin_user: str, admin_password: str):
-    conn = None
-    try:
-        conn = mysql.connector.connect(user=admin_user, password=admin_password)
-    except Exception as e:
-        print("Error connecting to mysql database.")
-        print(e)
-        exit(1)
-    return conn
+project_config_file: str = "project-config.json"
+project_config: dict = read_json(project_config_file)
+
+microservice_name: str = project_config["name"]
+
+db_config: dict = project_config["mysql"]
+db_name: str = microservice_name.replace("-", "_").upper()
+
+admin_user: str = db_config["adminUser"]
+admin_password: str = db_config["adminPassword"]
+
+tenant_name: str = "TENANT_" + db_name
+tenant_password: str = admin_password
+
+pyway_config_file: str = project_config["pywayConfig"]
+pyway_config_template_file: str = project_config["pywayConfigTemplate"]
+db_migration_dir: str = project_config["dbMigrationDir"]
 
 
 def create_database(conn, db_name: str):
@@ -36,18 +44,6 @@ def create_database(conn, db_name: str):
         print(e)
         exit(1)
     conn.close()
-
-
-def get_database_connection(admin_user: str, admin_password: str, db_name: str):
-    conn = None
-    # Connect to root using db_name database
-    try:
-        conn = mysql.connector.connect(user=admin_user, password=admin_password, database=db_name)
-    except Exception as e:
-        print(f"Error connecting to {db_name} database.")
-        print(e)
-        exit(1)
-    return conn
 
 
 def create_user(conn, tenant_name: str, tenant_password: str, db_name: str):
@@ -90,30 +86,29 @@ def setup_pyway_config(pyway_config_file: str, pyway_config_template_file: str,
         text_file.write(pyway_config)
 
 
-project_config_file: str = "project-config.json"
-project_config: dict = read_json(project_config_file)
+def get_tenant_user():
+    return tenant_name
 
-microservice_name: str = project_config["name"]
 
-db_config: dict = project_config["mysql"]
-db_name: str = microservice_name.replace("-", "_").upper()
+def get_tenant_password():
+    return tenant_password
 
-admin_user: str = db_config["adminUser"]
-admin_password: str = db_config["adminPassword"]
 
-tenant_name: str = "TENANT_" + db_name
-tenant_password: str = admin_password
+def get_db_name():
+    return db_name
 
-pyway_config_file: str = project_config["pywayConfig"]
-pyway_config_template_file: str = project_config["pywayConfigTemplate"]
-db_migration_dir: str = project_config["dbMigrationDir"]
 
-conn = get_admin_connection(admin_user, admin_password)
-create_database(conn, db_name)
+def main():
 
-conn = get_database_connection(admin_user, admin_password, db_name)
-create_user(conn, tenant_name, tenant_password, db_name)
+    conn = get_admin_connection(admin_user, admin_password)
+    create_database(conn, db_name)
 
-setup_pyway_config(pyway_config_file, pyway_config_template_file, 
+    conn = get_database_connection(admin_user, admin_password, db_name)
+    create_user(conn, tenant_name, tenant_password, db_name)
+
+    setup_pyway_config(pyway_config_file, pyway_config_template_file, 
                    tenant_name, tenant_password, db_name, db_migration_dir)
 
+
+if __name__ == "__main__":
+    main()

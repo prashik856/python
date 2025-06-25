@@ -2,3 +2,5 @@ __pycache__
 project-config.json
 .pyway.conf
 
+server_output.log
+
