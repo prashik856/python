@@ -6,8 +6,6 @@ app = Flask(__name__)
 current_version: str = "1.0.0"
 
 
-exit(0)
-
 # videos api, models api
 # store statistics in json files, load them first
 # videos api -> number of views
