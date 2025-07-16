@@ -54,6 +54,46 @@ def insert_into_tags(conn, video_id: int, model_id: int):
     return 200
 
 
+def get_models_from_tags(conn, video_id: int):
+    models: list = []
+    query = ("SELECT ID, VIDEOID, MODELID FROM MODELTAGS WHERE `VIDEOID`=%s")
+    try:
+        cursor = conn.cursor()
+        cursor.execute(query, (video_id,))
+        # print("Reading query response")
+        for (id, tag_video_id, model_id) in cursor:
+            model: dict = get_model_from_id(conn, model_id)
+            if model is not None:
+                models.append(model)
+        cursor.close()
+        return models
+        
+    except Exception as e:
+        print("Exception occured while getting data from database.")
+        print(e)
+        return None
+
+
+def get_videos_from_tags(conn, model_id: int):
+    videos: list = []
+    query = ("SELECT ID, VIDEOID, MODELID FROM MODELTAGS WHERE `MODELID`=%s")
+    try:
+        cursor = conn.cursor()
+        cursor.execute(query, (model_id,))
+        # print("Reading query response")
+        for (id, video_id, tag_model_id) in cursor:
+            video: dict = get_video_from_id(conn, video_id)
+            if video is not None:
+                videos.append(video)
+        cursor.close()
+        return videos
+        
+    except Exception as e:
+        print("Exception occured while getting data from database.")
+        print(e)
+        return None
+
+
 def get_model(conn, inner_id: str):
     model: dict = {}
     query = ("SELECT ID, INNERID, NAME, VIEWS, DIR FROM MODELS WHERE `INNERID`=%s")
@@ -106,6 +146,49 @@ def get_video(conn, name: str, path: str):
     try:
         cursor = conn.cursor()
         cursor.execute(query, (name,path))
+
+        # print("Reading query response")
+        for (id, video_name, views, video_path) in cursor:
+            video["id"] = id
+            video["name"] = video_name
+            video["views"] = views
+            video["path"] = video_path
+        cursor.close()
+        return video
+    except Exception as e:
+        print("Exception occured while getting data from database.")
+        print(e)
+        return None
+
+
+def get_model_from_id(conn, model_id: int):
+    model: dict = {}
+    query = ("SELECT ID, INNERID, NAME, VIEWS, DIR FROM MODELS WHERE `ID`=%s")
+    try:
+        cursor = conn.cursor()
+        cursor.execute(query, (model_id,))
+
+        # print("Reading query response")
+        for (id, innerid, name, views, dir) in cursor:
+            model["id"] = id
+            model["inner_id"] = innerid
+            model["name"] = name
+            model["views"] = views
+            model["dir"] = dir
+        cursor.close()
+        return model
+    except Exception as e:
+        print("Exception occured while getting data from database.")
+        print(e)
+        return None
+
+
+def get_video_from_id(conn, video_id: int):
+    video: dict = {}
+    query = ("SELECT ID, NAME, VIEWS, VIDEOPATH FROM VIDEOS WHERE `ID`=%s")
+    try:
+        cursor = conn.cursor()
+        cursor.execute(query, (video_id,))
 
         # print("Reading query response")
         for (id, video_name, views, video_path) in cursor:

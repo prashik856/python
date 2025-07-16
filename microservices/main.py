@@ -1,38 +1,46 @@
 from flask import Flask, request, Response, render_template
-from dao import get_model, get_connection, insert_into_models, get_video, insert_into_videos, get_tag, insert_into_tags, get_models, get_videos
+from dao import (get_model, get_connection, insert_into_models, get_video, 
+                 insert_into_videos, get_tag, insert_into_tags, get_models, 
+                 get_videos, get_videos_from_tags, get_video_from_id, 
+                 get_model_from_id, get_models_from_tags)
 import json
 
 app = Flask(__name__)
 current_version: str = "1.0.0"
 conn = get_connection()
 
-# get all models information
-# @app.route("/api/stars/v1/models", methods=['GET'])
-# def get_all_models():
-#     response = {}
-#     data = {}
+def get_app():
+    return app
 
-#     data["version"] = current_version
-#     response["status_code"] = "200"
-#     response["data"] = data
+# Get information about specific video
+'''
+curl --request GET \
+  http://localhost:5000/api/stars/v1/videos/1
+'''
+@app.route("/api/stars/v1/videos/<video_id>", methods=['GET'])
+def get_video_details(video_id: str):
+    # Video name needs to be unique
+    video: dict = get_video_from_id(conn, video_id)
+    if video is None:
+        return 404
+    models: list = get_models_from_tags(conn, video_id)
+    video["models"] = models
+    return Response(json.dumps(video), 200, mimetype='application/json')
 
-#     string_response: str = json.dumps(response)
-#     return string_response
 
-
-# get information about specific model
-# @app.route("/api/stars/v1/models/<model_id>", methods=['GET'])
-# def get_model(model_id: str):
-#     response = {}
-#     data = {}
-
-#     data["version"] = current_version
-#     data["user"] = model_id
-#     response["status_code"] = "200"
-#     response["data"] = data
-
-#     string_response: str = json.dumps(response)
-#     return string_response
+#get information about specific model
+'''
+curl --request GET \
+  http://localhost:5000/api/stars/v1/models/danadearmond3
+'''
+@app.route("/api/stars/v1/models/<inner_id>", methods=['GET'])
+def get_model_details(inner_id: str):
+    model: dict = get_model(conn, inner_id)
+    if model is None:
+        return 404
+    videos: list = get_videos_from_tags(conn, model["id"])
+    model["videos"] = videos
+    return Response(json.dumps(model), status=200, mimetype='application/json')
 
 
 # Register a model
@@ -80,7 +88,7 @@ def register_model():
 POST
 curl --header "Content-Type: application/json" \
   --request POST \
-  --data '{"name":"DanaDearmondMassiveLoadsofCumPorn00.mp4","path":"videos/Dana_Dearmond/DanaDearmondMassiveLoadsofCumPorn00.mp4"}' \
+  --data '{"name":"DanaDearmond.mp4","path":"videos/Dana_Dearmond/DanaDearmond.mp4"}' \
   http://localhost:5000/api/stars/v1/videos
 '''
 '''
@@ -100,7 +108,7 @@ def register_video():
         name: str = request_data["name"]
         video_path: str = request_data["path"]
 
-        video: dict = get_video(conn, name, video_path)
+        video: dict = get_video(conn, name)
         if len(video.keys()) == 0:
             print(f"Video {name} not registered.")
             code = insert_into_videos(conn, name, video_path)
@@ -115,7 +123,7 @@ def register_video():
 '''
 curl --header "Content-Type: application/json" \
   --request POST \
-  --data '{"inner_id":"danadearmond3","name":"DanaDearmondMassiveLoadsofCumPorn00.mp4","path":"videos/Dana_Dearmond/DanaDearmondMassiveLoadsofCumPorn00.mp4"}' \
+  --data '{"inner_id":"danadearmond3","name":"DanaDearmond.mp4","path":"videos/Dana_Dearmond/DanaDearmond.mp4"}' \
   http://localhost:5000/api/stars/v1/tags
 '''
 # Register a video to model
